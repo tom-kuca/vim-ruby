@@ -327,7 +327,13 @@ function GetRubyIndent(...)
         if col('.') + 1 == col('$')
           return ind + &sw
         else
-          return virtcol('.')
+          " if the previos line is a continuation, add some more indent
+          " see etc/examples/indent/continuations.rb
+          if line =~ s:non_bracket_continuation_regex
+            return virtcol('.') + &sw
+          else
+            return virtcol('.')
+          endif
         endif
       else
         let nonspace = matchend(line, '\S', open.pos + 1) - 1
